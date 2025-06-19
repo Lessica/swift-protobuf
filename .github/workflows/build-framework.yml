@@ -21,7 +21,7 @@ jobs:
     - name: Setup Theos
       uses: actions/checkout@v4
       with:
-         repository: theos/theos
+         repository: roothide/theos
          path: ${{ github.workspace }}/theos
          submodules: recursive
 
@@ -58,6 +58,18 @@ jobs:
     - uses: actions/upload-release-asset@v1
       env:
         FILENAME: org.swift.protobuf.swiftprotobuf_${{env.VERSION}}_iphoneos-arm64.deb
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: packages/${{env.FILENAME}}
+        asset_name: ${{env.FILENAME}}
+        asset_content_type: application/vnd.debian.binary-package
+
+    - name: Build & Upload SwiftProtobuf (roothide)
+      run: make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
+    - uses: actions/upload-release-asset@v1
+      env:
+        FILENAME: org.swift.protobuf.swiftprotobuf_${{env.VERSION}}_iphoneos-arm64e.deb
         GITHUB_TOKEN: ${{ github.token }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
